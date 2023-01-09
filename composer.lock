@@ -1,0 +1,59 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "f3c31335737afd30dc148bec3f789c5c",
+    "packages": [
+        {
+            "name": "puneetxp/the",
+            "version": "0.1.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/puneetxp/the_lib.git",
+                "reference": "b62cf9f7e3c468e0efa09f59b2bd7aace8602cda"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/puneetxp/the_lib/zipball/b62cf9f7e3c468e0efa09f59b2bd7aace8602cda",
+                "reference": "b62cf9f7e3c468e0efa09f59b2bd7aace8602cda",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "The\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Puneet Sharma",
+                    "email": "puneetsharma9@hotmail.com"
+                }
+            ],
+            "description": "php dependcies for The framework",
+            "support": {
+                "issues": "https://github.com/puneetxp/the_lib/issues",
+                "source": "https://github.com/puneetxp/the_lib/tree/0.1.5"
+            },
+            "time": "2022-12-02T14:20:53+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": [],
+    "plugin-api-version": "2.3.0"
+}
