@@ -1,0 +1,64 @@
+{
+    "env": {
+        "host": "mfdrent.in",
+        "sslhost": ".mfdrent.in",
+        "dbhost": "localhost",
+        "dbname": "u368338497_mdf",
+        "dbuser": "u368338497_mdf",
+        "dbpwd": "Mdf@0808",
+        "samesite": "Strict",
+        "httponly": true,
+        "secure": true
+    },
+    "fresh": true,
+    "controller": true,
+    "model": true,
+    "mysql": true,
+    "interface": true,
+    "front-end": [
+        "angular"
+    ],
+    "angular": {
+        "outputPath": "..\/public_html\/manager",
+        "assets": []
+    },
+    "back-end": [
+        "php"
+    ],
+    "table": {
+        "active_role": false,
+        "product": false,
+        "role": false,
+        "user": false,
+        "account": false,
+        "billing": false,
+        "journal": false,
+        "myaccount": false,
+        "payment": false,
+        "plan": false,
+        "subscription": false,
+        "bill": false,
+        "book": false,
+        "gstn": false,
+        "journal_detail": false,
+        "order": false,
+        "payment_method": false,
+        "service": false,
+        "service_attribute": false,
+        "service_attribute_value": false,
+        "service_plan": false,
+        "service_plan_price": false,
+        "account_detail": false,
+        "account_attribute_value": false,
+        "account_type": false,
+        "book_attribute": false,
+        "book_detail": false,
+        "account_attribute": false,
+        "address": false,
+        "client": false,
+        "photo": false,
+        "delivery": false,
+        "": false,
+        "guestorder": false
+    }
+}

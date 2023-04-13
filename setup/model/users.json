@@ -1,0 +1,37 @@
+{
+  "name": "user",
+  "table": "users",
+  "crud": {
+    "isuper": ["r", "u", "a"]
+  },
+  "enable": 1,
+  "data": [{
+    "name": "name",
+    "mysql_data": "varchar(255)",
+    "datatype": "string"
+  }, {
+    "name": "email",
+    "mysql_data": "varchar(255) UNIQUE",
+    "datatype": "string"
+  }, {
+    "name": "phone",
+    "mysql_data": "varchar(14) UNIQUE",
+    "sql_attribute": "NULL",
+    "datatype": "string"
+  }, {
+    "name": "google_id",
+    "mysql_data": "varchar(255)",
+    "sql_attribute": "NULL",
+    "datatype": "string"
+  }, {
+    "name": "facebook_id",
+    "mysql_data": "varchar(255)",
+    "sql_attribute": "NULL",
+    "datatype": "string"
+  }, {
+    "name": "password",
+    "mysql_data": "varchar(255)",
+    "sql_attribute": "NULL",
+    "datatype": "string"
+  }]
+}

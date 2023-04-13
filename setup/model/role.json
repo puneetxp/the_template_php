@@ -1,0 +1,13 @@
+{
+  "name": "role",
+  "table": "roles",
+  "crud": {
+    "isuper": ["c", "r", "u", "a", "p"]
+  },
+  "enable": 1,
+  "data": [{
+    "name": "name",
+    "mysql_data": "varchar(255)",
+    "datatype": "string"
+  }]
+}
