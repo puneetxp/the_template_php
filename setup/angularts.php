@@ -36,85 +36,13 @@ function angularset($table, $json)
     $angular_config,
     JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES
   ));
-  createfile(
-    __DIR__ . '/../angular/src/app/shared/Ngxs/State/Login.state.ts',
-    'import { Injectable } from "@angular/core";
-import { Router } from "@angular/router";
-import { State, Selector, Action, StateContext } from "@ngxs/store";
-import { Login } from "../../Interface/Login";
-import { SetLogin, DeleteLogin } from "../Action/Login.action";
-
-@State<Login |false>({
-    name: "login",
-    defaults: false
-})
-@Injectable()
-export class LoginState {
-    constructor() { router: Router }
-    @Selector()
-    static getLogin(state: Login) {
-      return state;
+  foreach (scanfullfolder(__DIR__ . "/template/angular/") as $file) {
+    $pre = __DIR__ . '/../angular';
+    $target = str_replace(__DIR__ . "/template/angular", "",  $file);
+    if (is_file($pre . $target)) {
+      copy($file, $pre . $target);
     }
-    @Selector()
-    static isLogin(state: Login | false, router: Router) {
-      if (state) {
-        return state;
-      }
-      return false;
-    }
-    @Action(SetLogin)
-    SetLogin({ setState }: StateContext<Login>, { payload }: SetLogin): void {
-      setState(payload);
-    }
-    @Action(DeleteLogin, { cancelUncompleted: true })
-    DeleteLogin({ setState }: StateContext<false>) {
-      setState(false);
-    }
-}'
-  );
-  createfile(
-    __DIR__ . '/../angular/src/app/shared/Ngxs/Action/Login.action.ts',
-    'import { Login } from "../../Interface/Login";
-
-export class SetLogin {
-      static readonly type = "[LOGIN] Edit";
-      constructor(public payload: Login) { }
-}
-
-export class DeleteLogin {
-      static readonly type = "[LOGIN] reset";
-}'
-  );
-
-  createfile(
-    __DIR__ . '/../angular/src/app/shared/classes/log/logout.ts',
-    'import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { Router } from "@angular/router";
-import { Store } from "@ngxs/store";
-import { DeleteLogin } from "../../Ngxs/Action/Login.action";
-@Injectable({ providedIn: "root" })
-export class Logout {
-    constructor(private router: Router, private http: HttpClient, private store: Store) { }
-    get logout() {
-        return this.http.get("/api/logout").subscribe(
-            () => {
-                this.store.dispatch(new DeleteLogin).
-                    subscribe(() => { this.router.parseUrl(" / ") })
-            }
-        );
-    }
-}'
-  );
-  createfile(
-    __DIR__ . '/../angular/src/app/shared/Interface/Login.ts',
-    'export interface Login {
-    name: string;
-    email: string;
-    id: number;
-    roles: string[];
-}'
-  );
+  }
 }
 
 function actionngxs_set($table)

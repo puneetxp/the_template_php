@@ -14,7 +14,19 @@ function defaultsetup($data = ['id', 'created_at', 'updated_at'])
    }
    return $table;
 }
-
+function scanfullfolder($dir)
+{
+   $x = [];
+   $d = scandir($dir);
+   for ($i = 2; $i < count($d); $i++) {
+      if (is_file("$dir/$d[$i]")) {
+         array_push($x, "$dir/$d[$i]");
+      } else {
+         $x = [...$x, ...scanfullfolder("$dir/$d[$i]")];
+      }
+   }
+   return $x;
+}
 function default_att($item)
 {
    $default_sql_attribute = " NOT NULL";
@@ -35,8 +47,8 @@ $output_path = '../php/App/';
 function table_set($item, $x)
 {
    isset($item['default']) ? $table = defaultsetup($item['default']) : $table = defaultsetup();
-   isset($item['enable']) ? 
-   $table[] = ['name' => 'enable', 'mysql_data' => 'TINYINT(1)', 'datatype' => 'number', 'sql_attribute' => 'DEFAULT ' . $item['enable'] . ' NOT NULL ']: '';
+   isset($item['enable']) ?
+      $table[] = ['name' => 'enable', 'mysql_data' => 'TINYINT(1)', 'datatype' => 'number', 'sql_attribute' => 'DEFAULT ' . $item['enable'] . ' NOT NULL '] : '';
    isset($item['data']) ? ' ' : $item['data'] = [];
    $table = array_merge($table, array_map('default_att', $item['data']));
    $relationfor = [];
