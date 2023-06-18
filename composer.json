@@ -2,9 +2,6 @@
     "name": "puneetxp/the_template_php",
     "description": "PHP template for The framework",
     "type": "template",
-    "require": {
-        "puneetxp/the": "^0.1.5"
-    },
     "license": "Apache-2.0",
     "authors": [
         {
