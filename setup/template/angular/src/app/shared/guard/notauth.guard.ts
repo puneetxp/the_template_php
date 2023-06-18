@@ -1,11 +1,5 @@
 import { Injectable } from "@angular/core";
-import {
-  ActivatedRouteSnapshot,
-  CanActivate,
-  Router,
-  RouterStateSnapshot,
-  UrlTree,
-} from "@angular/router";
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from "@angular/router";
 import { Select } from "@ngxs/store";
 import { map, Observable } from "rxjs";
 import { Login } from "../Interface/Login";
@@ -13,7 +7,7 @@ import { Login } from "../Interface/Login";
 @Injectable({
   providedIn: "root",
 })
-export class NotauthGuard implements CanActivate {
+export class NotauthGuard  {
   @Select()
   login$!: Observable<Login | false>;
 

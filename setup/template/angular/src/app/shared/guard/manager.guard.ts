@@ -1,11 +1,5 @@
 import { Injectable } from "@angular/core";
-import {
-  ActivatedRouteSnapshot,
-  CanActivate,
-  Router,
-  RouterStateSnapshot,
-  UrlTree,
-} from "@angular/router";
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from "@angular/router";
 import { Select, Store } from "@ngxs/store";
 import { map, Observable } from "rxjs";
 import { Login } from "../Interface/Login";
@@ -13,7 +7,7 @@ import { Login } from "../Interface/Login";
 @Injectable({
   providedIn: "root",
 })
-export class ManagerGuard implements CanActivate {
+export class ManagerGuard  {
   @Select()
   login$!: Observable<Login | undefined>;
 

@@ -1,7 +1,41 @@
 <?php
 
+function dbsetfortable($table)
+{
+  $x = json_encode(array_column($table, "name"));
+  fwrite(fopen_dir(__DIR__ . "/../angular/src/app/shared/db/tables.ts"), "export const tables =$x");
+}
+function initservice($table)
+{
+  $serviceconstruct = [];
+  $serviceimport = [];
+  $servicerun = [];
+  foreach ($table as $item) {
+    $Name = ucfirst($item['name']);
+    $serviceimport[] = "import { " . $Name . "Service } from './Model/$Name.service';";
+    $serviceconstruct[] = "private " . $item['table'] . " : $Name" . "Service";
+    $servicerun[] = "await this.". $item['table'].".checkinit()";
+  }
+  $write = "import { Injectable } from '@angular/core';".
+implode("\n", $serviceimport)."
+@Injectable({
+  providedIn: 'root'
+})
+export class RunService {
+
+  constructor(".  implode(",\n", $serviceconstruct).") { }
+  async run() {
+    ".  implode(";\n", $servicerun)."
+  }
+}
+";
+
+fwrite(fopen_dir(__DIR__ . "/../angular/src/app/shared/Service/run.service.ts"), $write);
+}
 function angularset($table, $json)
 {
+  dbsetfortable($table);
+  initservice($table);
   foreach ($table as $item) {
     $Interface_write = Interface_set($item);
     $angular_path = '../angular/src/app/shared/';
@@ -50,7 +84,6 @@ function actionngxs_set($table)
   $dir = "../..";
   $Name = ucfirst($table['name']);
   return "import { $Name } from '$dir/Interface/Model/$Name';
-
 export class Set$Name {
   static readonly type = '[" . strtoupper($table['table']) . "] set $Name';
   constructor(public payload: $Name" . "[]" . ") { }
@@ -86,6 +119,8 @@ function statengxs_set($table)
 import { Add$Name, Delete$Name, Edit$Name, Set$Name, Upsert$Name  } from '../Action/$Name" . ".action';
 import { $Name } from '$dir/Interface/Model/$Name';
 import { Injectable } from '@angular/core';
+import { The_delSomeData, The_putSomeData, The_setData } from '../../Service/indexed-db.service';
+const table = '$name';
 export interface $Name" . "StateModel {
   $names: $Name" . "[]" . ";
 }
@@ -105,10 +140,12 @@ export class $Name" . "State {
   }
   @Action(Set$Name)
   Set$Name({ setState }: StateContext<$Name" . "StateModel>, { payload }: Set$Name) {
+    The_setData(table, payload);
     setState({ $names: payload });
   }
   @Action(Add$Name)
   Add$Name({ getState, patchState }: StateContext<$Name" . "StateModel>, { payload }: Add$Name) {
+    The_putSomeData(table, payload);
     patchState({ $names: [...getState().$names, payload] });
   }
   @Action(Upsert$Name)
@@ -117,6 +154,7 @@ export class $Name" . "State {
       setState({ $names: payload });
     }  else {
       payload.forEach(i => {
+        The_putSomeData(table, payload);
         patchState({
           $names: getState().$names.filter(a => a.id != i.id)
         });
@@ -128,11 +166,13 @@ export class $Name" . "State {
   }
   @Action(Edit$Name)
   Edit$Name({ getState, patchState }: StateContext<$Name" . "StateModel>, { payload }: Edit$Name) {
+    The_putSomeData(table, payload);
     let reservices = getState().$names.filter(a => a.id != payload.id);
     patchState({ $names: [...reservices, payload] });
   }
   @Action(Delete$Name)
   Delete$Name({ getState, patchState }: StateContext<$Name" . "StateModel>, { payload }: Delete$Name) {
+    The_delSomeData(table, payload);
     patchState({
       $names: getState().$names.filter(a => a.id != payload)
     })
@@ -156,6 +196,7 @@ import { $Name } from '$dir" . "Interface/Model/$Name';
 import { $Name" . "StateModel } from '$dir" . "Ngxs/State/$Name.state';
 import { AsyncPipe } from '@angular/common';
 import { FormDataService } from '../Form/FormData.service';
+import { The_getall } from '../../Service/indexed-db.service';
 type keys = '" . implode("' | '", array_column($table['data'], 'name')) . "';
 interface find {
   key?: keys;
@@ -171,6 +212,11 @@ export class $Name" . "Service {
   prefix(prefix: string) {
     this.url = '/api/' + prefix + '/' + this.model
     return this;
+  }
+  async checkinit() {
+    await The_getall(this.model).then(i => {
+      this.store.dispatch(new Set$Name(i));
+    });
   }
   private url = '/api/' + this.model;
   create(_value: any): void {

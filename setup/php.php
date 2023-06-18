@@ -98,12 +98,13 @@ class ' . ucfirst($key) . ucfirst($table['name']) . 'Controller {
     ' : '') .
       (in_array("u", $curd) ? '
     public static function update($id) {
-        return ' . ucfirst($table['name']) . '::where([["id"=>$id]])->update($_POST)->getInserted();
+        ' . ucfirst($table['name']) . '::where(["id"=>[$id]])->update($_POST);
+        return ' . ucfirst($table['name']) . '::find($id);
     }
     ' : '') .
       (in_array("p", $curd) ? '
     public static function upsert() {
-        return ' . ucfirst($table['name']) . '::upsert($_POST)->getsInserted();
+        return ' . ucfirst($table['name']) . '::upsert($_POST["'.$table['table'].'"])->getsInserted();
     }
     ' : '') .
       (in_array("d", $curd) ? '

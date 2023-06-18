@@ -1,11 +1,15 @@
 {
+    "alias": {
+        "component": "c",
+        "layout": "l"
+    },
     "env": {
-        "host": "mfdrent.in",
-        "sslhost": ".mfdrent.in",
+        "host": "example.com",
+        "sslhost": ".example.com",
         "dbhost": "localhost",
-        "dbname": "u368338497_mdf",
-        "dbuser": "u368338497_mdf",
-        "dbpwd": "Mdf@0808",
+        "dbname": "demo",
+        "dbuser": "username",
+        "dbpwd": "password",
         "samesite": "Strict",
         "httponly": true,
         "secure": true
@@ -59,6 +63,7 @@
         "photo": false,
         "delivery": false,
         "": false,
-        "guestorder": false
+        "guestorder": false,
+        "category": false
     }
 }

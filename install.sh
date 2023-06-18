@@ -13,5 +13,5 @@
 # php angular
 npm init @angular angular
 cd angular
-#cd ..
-#php setup.php
+cd ..
+php setup.php

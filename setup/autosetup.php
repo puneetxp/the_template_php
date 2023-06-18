@@ -14,18 +14,23 @@ foreach (glob(__DIR__ . "/*.php") as $filename) {
    require_once $filename;
 }
 $x = [];
-foreach (glob(__DIR__ . "/model/*.json") as $filename) {
-   $x[] = json_decode(file_get_contents($filename), TRUE);
+foreach (glob(__DIR__ . "/model/*.json") as $file) {
+   $filename = preg_replace("/.*.\/(.*).json/", "$1", $file);
+   $j = json_decode(file_get_contents($file), TRUE);
+   if (isset($j['alter'])) {
+   } else {
+      $x[$filename] = $j;
+   }
 }
 $table = [];
 $roles = ['isuper'];
-foreach ($x as $item) {
+foreach ($x as $key => $item) {
    if (isset($item['crud']['roles'])) {
       if (is_array($item['crud']['roles'])) {
          $roles = array_merge(array_keys($item['crud']['roles']), $roles);
       }
    }
-   $table[] = table_set($item, $x);
+   $table[] = table_set($item, array_values($x));
 }
 
 $roles = array_filter(array_unique($roles), fn ($role) => !($role == "*" || $role == "-"));
