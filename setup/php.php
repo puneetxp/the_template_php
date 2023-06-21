@@ -276,10 +276,10 @@ function phpenv($json)
 }
 function templatecopy(string $folder, string $destination)
 {
-   foreach (scanfullfolder(__DIR__ . "/template/$folder/") as $file) {
+   foreach (scanfullfolder(__DIR__ . "/template/$folder") as $file) {
       $pre = __DIR__ . '/../' . $destination;
       $target = str_replace(__DIR__ . "/template/$folder", "",  $file);
-      if (is_file($pre . $target)) {
+      if (!is_file($pre . $target)) {
          copy($file, $pre . $target);
       }
    }

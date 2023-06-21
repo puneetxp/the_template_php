@@ -73,7 +73,7 @@ function angularset($table, $json)
   foreach (scanfullfolder(__DIR__ . "/template/angular/") as $file) {
     $pre = __DIR__ . '/../angular';
     $target = str_replace(__DIR__ . "/template/angular", "",  $file);
-    if (is_file($pre . $target)) {
+    if (is_file(!$pre . $target)) {
       copy($file, $pre . $target);
     }
   }
