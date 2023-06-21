@@ -67,11 +67,58 @@ class ' . ucfirst($table['name']) . ' extends Model {
 
 }');
 }
-
-function phpController(array $table, array $curd, string $key = '')
+function phpdefaultController(array $table, array $curd, string $key = '')
 {
    return php_w('
 namespace App\Controller\\' . ucfirst($key) . ';
+use App\Model\{
+  ' . ucfirst($table['name']) . '
+};
+
+class ' . ucfirst($key) . ucfirst($table['name']) . 'Controller {
+
+' . (in_array("a", $curd) ? '
+    public static function all() {
+        if (isset($_GET["latest"])) {
+            return ' . ucfirst($table['name']) . '::wherec([["updated_at", ">", $_GET["latest"]]])->get();
+        }
+        return ' . ucfirst($table['name']) . '::all();
+    }
+' : '') .
+      (in_array("r", $curd) ? '
+    public static function show($id) {
+        return ' . ucfirst($table['name']) . '::find($id);
+    }' : '') .
+      (in_array("c", $curd) ? '
+    public static function store() {
+        return ' . ucfirst($table['name']) . '::create($_POST)->getInserted();
+    }
+    ' : '') .
+      (in_array("u", $curd) ? '
+    public static function update($id) {
+        ' . ucfirst($table['name']) . '::where(["id"=>[$id]])->update($_POST);
+        return ' . ucfirst($table['name']) . '::find($id);
+    }
+    ' : '') .
+      (in_array("p", $curd) ? '
+    public static function upsert() {
+        return ' . ucfirst($table['name']) . '::upsert($_POST["' . $table['table'] . '"])->getsInserted();
+    }
+    ' : '') .
+      (in_array("d", $curd) ? '
+
+    public static function delete($id) {
+        ' . ucfirst($table['name']) . '::delete(["id"=>$id]);
+        return $id;
+    }' : '') . '
+
+}');
+}
+function phpphotoController(array $table, array $curd, string $key = '')
+{
+   return php_w('
+namespace App\Controller\\' . ucfirst($key) . ';
+use The\{FileAct, Img, Response};
 use App\Model\{
   ' . ucfirst($table['name']) . '
 };
@@ -93,28 +140,51 @@ class ' . ucfirst($key) . ucfirst($table['name']) . 'Controller {
     }' : '') .
       (in_array("c", $curd) ? '
     public static function store() {
-        return ' . ucfirst($table['name']) . '::create($_POST)->getInserted();
+        $file = FileAct::init($_FILES[' . '"photo"' . '])->public("")->fileupload($_FILES[' . '"photo"' . '], $_POST[' . '"name"' . ']);
+        return ' . ucfirst($table['name']) . '::create($file)->getInserted();
     }
     ' : '') .
       (in_array("u", $curd) ? '
     public static function update($id) {
-        ' . ucfirst($table['name']) . '::where(["id"=>[$id]])->update($_POST);
+      $file = FileAct::init($_FILES[' . '"photo"' . '])->public("")->fileupload($_FILES[' . '"photo"' . '], $_POST[' . '"name"' . ']);
+      Photo::where(["id" => [$id]])->update($file);
         return ' . ucfirst($table['name']) . '::find($id);
     }
     ' : '') .
       (in_array("p", $curd) ? '
     public static function upsert() {
-        return ' . ucfirst($table['name']) . '::upsert($_POST["'.$table['table'].'"])->getsInserted();
+      if (isset($_POST["' . 'dir' . '"])) {
+         if ($_POST["' . 'dir' . '"] !== "") {
+             $files = FileAct::init($_FILES["' . 'photo' . '"])->public($_POST["' . 'dir' . '"])->ups()->files;
+             ' . (isset($table['type']['version']) && count($table['type']['version']) > 0 ? ('foreach ($files as $file) {
+                 ' . (implode('', array_map(fn ($key, $value) => 'Img::webpImage(source: $file[' . '"path"' . '], destination: $file[' . '"dir"' . '] . DIRECTORY_SEPARATOR . "' . $key . '/" . $file[' . '"name"' . '], x: ' . $value['width'] . ', quality: ' . $value['quality'] . ');
+                 ', array_keys($table['type']['version']), array_values($table['type']['version']))))  . '}') : "") . '
+             return Photo::upsert($files)->getsInserted();
+         }
+     }
+     return Response::bad_req("It seem you Missed Directory");
     }
     ' : '') .
       (in_array("d", $curd) ? '
 
     public static function delete($id) {
-        ' . ucfirst($table['name']) . '::delete(["id"=>$id]);
-        return $id;
+      $' . $table['name'] . ' = ' . ucfirst($table['name']) . '::find($id)->array();
+      unlink($' . $table['name'] . '[' . '"path"' . ']);
+      ' . ucfirst($table['name']) . '::delete(["id" => $id]);
     }' : '') . '
 
 }');
+}
+function phpController(array $table, array $curd, string $key = '')
+{
+   if (isset($table["type"])) {
+      if ($table["type"]['name'] == "file") {
+      } elseif ($table["type"]['name'] == "photo") {
+         return phpphotoController($table, $curd, $key);
+      }
+   } else {
+      return phpdefaultController($table, $curd, $key);
+   }
 }
 
 function phpset($table, $json)
@@ -154,6 +224,7 @@ function phpset($table, $json)
       phproterc('ipublic', $GLOBALS['For']['ipublic']);
    }
    phpenv($json);
+   templatecopy("php", "php");
 }
 
 function phpwritec($item, $value, $key, $role = '')
@@ -202,4 +273,14 @@ function phpenv($json)
       return "
       define('$key', " . json_encode($value) . ");";
    }, array_keys($json["env"]), $json["env"]))));
+}
+function templatecopy(string $folder, string $destination)
+{
+   foreach (scanfullfolder(__DIR__ . "/template/$folder/") as $file) {
+      $pre = __DIR__ . '/../' . $destination;
+      $target = str_replace(__DIR__ . "/template/$folder", "",  $file);
+      if (is_file($pre . $target)) {
+         copy($file, $pre . $target);
+      }
+   }
 }
