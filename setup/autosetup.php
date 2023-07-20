@@ -45,6 +45,9 @@ for ($i = 0; $i < count($table); ++$i) {
       }
    }
 }
+//set sql_attribute
+$table = mysqltable::addattribute($table);
+// print_r($table);
 $controller_route = [];
 foreach ($table as $item) {
    isset($json_set['table'][$item['name']]) ? '' : $json_set['table'][$item['name']] = false;
@@ -91,8 +94,8 @@ foreach ($table as $item) {
    //       //      $router_model = crud($item['name'], $item['roles'], $item['crud']);
    //       //      fwrite($route_file, php_wrapper("use App\Controller\{ " . ucfirst($item['name']) . "Controller};" . $router_model));
    //    }
-   $mysql_write = mysql_table($item);
-   $mysql_relation = migrate_table($item);
+   $mysql_write = mysqltable::table($item);
+   $mysql_relation = mysqltable::migrate_table($item);
    $mysql = fopen_dir(__DIR__ . "/../database/" . ucfirst('mysql/') . ucfirst($item['name']) . '.sql');
    $mysql_relation_file = fopen_dir(__DIR__ . "/../database/" . ucfirst('mysql/') . ucfirst('relations/') . ucfirst($item['name']) . '_relation.sql');
    fwrite($mysql_relation_file, $mysql_relation);

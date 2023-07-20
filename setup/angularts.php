@@ -14,23 +14,26 @@ function initservice($table)
     $Name = ucfirst($item['name']);
     $serviceimport[] = "import { " . $Name . "Service } from './Model/$Name.service';";
     $serviceconstruct[] = "private " . $item['table'] . " : $Name" . "Service";
-    $servicerun[] = "await this.". $item['table'].".checkinit()";
+    $servicerun[] = "await this." . $item['table'] . ".checkinit()";
   }
-  $write = "import { Injectable } from '@angular/core';".
-implode("\n", $serviceimport)."
+  $write = "import { Injectable } from '@angular/core';" .
+    implode("\n", $serviceimport) . "
+import { IndexedDBService } from 'the-angular/lib/service/indexed-db.service';
+import { tables } from '../db/tables';
 @Injectable({
   providedIn: 'root'
 })
 export class RunService {
-
-  constructor(".  implode(",\n", $serviceconstruct).") { }
+  constructor(private indexdb: IndexedDBService," .  implode(",\n", $serviceconstruct) . ") { }
   async run() {
-    ".  implode(";\n", $servicerun)."
+    this.indexdb.setDb('shopinfactorynew');
+    this.indexdb.setTable(tables);
+    " .  implode(";\n", $servicerun) . "
   }
 }
 ";
 
-fwrite(fopen_dir(__DIR__ . "/../angular/src/app/shared/Service/run.service.ts"), $write);
+  fwrite(fopen_dir(__DIR__ . "/../angular/src/app/shared/Service/run.service.ts"), $write);
 }
 function angularset($table, $json)
 {
@@ -50,6 +53,9 @@ function angularset($table, $json)
     fwrite($actionngxs, $actionngxs_write);
     $Interface = fopen_dir(__DIR__ . "/" . $angular_path . 'Interface/' . ucfirst('model/') . ucfirst($item['name']) . '.ts');
     fwrite($Interface, $Interface_write);
+    formsset($item);
+    $Interface = fopen_dir(__DIR__ . "/" . $angular_path . 'Form/' . ucfirst('model/') . ucfirst($item['name']) . '.ts');
+    fwrite($Interface, formsset($item));
   }
   $angular_config = json_decode(file_get_contents(__DIR__ . '/../angular/angular.json'), TRUE);
 
@@ -119,7 +125,7 @@ function statengxs_set($table)
 import { Add$Name, Delete$Name, Edit$Name, Set$Name, Upsert$Name  } from '../Action/$Name" . ".action';
 import { $Name } from '$dir/Interface/Model/$Name';
 import { Injectable } from '@angular/core';
-import { The_delSomeData, The_putSomeData, The_setData } from '../../Service/indexed-db.service';
+import { IndexedDBService } from 'the-angular/lib/service/indexed-db.service';
 const table = '$name';
 export interface $Name" . "StateModel {
   $names: $Name" . "[]" . ";
@@ -132,7 +138,7 @@ export interface $Name" . "StateModel {
   }
 })
 export class $Name" . "State {
-  constructor() { }
+  constructor(private indexeddb: IndexedDBService) { }
   ngxsOnInit(): void { }
   @Selector()
   static Get$names(state: $Name" . "StateModel) {
@@ -140,21 +146,22 @@ export class $Name" . "State {
   }
   @Action(Set$Name)
   Set$Name({ setState }: StateContext<$Name" . "StateModel>, { payload }: Set$Name) {
-    The_setData(table, payload);
+    this.indexeddb.The_setData(table, payload);
     setState({ $names: payload });
   }
   @Action(Add$Name)
   Add$Name({ getState, patchState }: StateContext<$Name" . "StateModel>, { payload }: Add$Name) {
-    The_putSomeData(table, payload);
+    this.indexeddb.The_putSomeData(table, payload);
     patchState({ $names: [...getState().$names, payload] });
   }
   @Action(Upsert$Name)
   Upsert$Name({ getState, setState, patchState }: StateContext<$Name" . "StateModel>, { payload }: Upsert$Name) {
     if (getState().$names?.length == 0) {
+      this.indexeddb.The_setData(table, payload);
       setState({ $names: payload });
     }  else {
       payload.forEach(i => {
-        The_putSomeData(table, payload);
+        this.indexeddb.The_putSomeData(table, payload);
         patchState({
           $names: getState().$names.filter(a => a.id != i.id)
         });
@@ -166,13 +173,13 @@ export class $Name" . "State {
   }
   @Action(Edit$Name)
   Edit$Name({ getState, patchState }: StateContext<$Name" . "StateModel>, { payload }: Edit$Name) {
-    The_putSomeData(table, payload);
+    this.indexeddb.The_putSomeData(table, payload);
     let reservices = getState().$names.filter(a => a.id != payload.id);
     patchState({ $names: [...reservices, payload] });
   }
   @Action(Delete$Name)
   Delete$Name({ getState, patchState }: StateContext<$Name" . "StateModel>, { payload }: Delete$Name) {
-    The_delSomeData(table, payload);
+    this.indexeddb.The_delSomeData(table, payload);
     patchState({
       $names: getState().$names.filter(a => a.id != payload)
     })
@@ -180,23 +187,36 @@ export class $Name" . "State {
 }
 ";
 }
-
+function formsset($table)
+{
+  $nullable = array_column(array_filter(
+    $table["data"],
+    fn ($r) => !(isset($r["default"]) ? ($r["default"] === "NULL" ? false : true) : true) &&
+      !(isset($r["sql_attribute"]) && (str_contains($r['sql_attribute'], 'NOT NULL') || str_contains($r['sql_attribute'], 'PRIMARY')))
+  ), "name");
+  $fillable = array_filter($table["data"], fn ($r) => !isset($r["fillable"]));
+  return "import { Validators } from '@angular/forms'; \nexport const " .  "Create" . $table["name"] . "Form = {" . implode("", array_map(fn ($value) => "
+  " . $value["name"] . ": { validator:" . ((in_array($value["name"], $nullable) || isset($value['default'])) ? " [] " : " [Validators.required] ") . "},", $fillable)) . "
+};
+export const Update" . $table["name"] . "Form = {" . implode("", array_map(fn ($value) => "
+  " . $value["name"] . ": { validator:" . (in_array($value["name"], $nullable) ? " [] " : " [Validators.required] ") . "},", $table["data"])) . "
+};";
+}
 function servicets_set($table)
 {
   $Name = ucfirst($table['name']);
   $name = $table['name'];
   $names = $table['table'];
   $dir = "../../";
-  return "import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+  return "import { Injectable } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { map, Observable } from 'rxjs';
 import { Add$Name, Delete$Name, Edit$Name, Set$Name , Upsert$Name } from '$dir" . "Ngxs/Action/$Name.action';
 import { $Name } from '$dir" . "Interface/Model/$Name';
 import { $Name" . "StateModel } from '$dir" . "Ngxs/State/$Name.state';
 import { AsyncPipe } from '@angular/common';
-import { FormDataService } from '../Form/FormData.service';
-import { The_getall } from '../../Service/indexed-db.service';
+import { IndexedDBService } from 'the-angular/lib/service/indexed-db.service';
+import { FormDataService } from 'the-angular/lib/service/Form/FormData.service';
 type keys = '" . implode("' | '", array_column($table['data'], 'name')) . "';
 interface find {
   key?: keys;
@@ -207,14 +227,14 @@ interface find {
 })
 export class $Name" . "Service {
   @Select() " . $name . "$!: Observable<" . $Name . "StateModel>;
-  constructor(private asyncpipe: AsyncPipe, private http: HttpClient, private store: Store, private form: FormDataService) { }
+  constructor(private AsyncPipe: AsyncPipe, private indexdb: IndexedDBService, private store: Store, private form: FormDataService) { }
   private model = '" . $name . "';
   prefix(prefix: string) {
     this.url = '/api/' + prefix + '/' + this.model
     return this;
   }
   async checkinit() {
-    await The_getall(this.model).then(i => {
+    await this.indexdb.The_getall<$Name" . "[]" . ">(this.model).then(i => {
       this.store.dispatch(new Set$Name(i));
     });
   }
@@ -228,8 +248,17 @@ export class $Name" . "Service {
   getState(id: number | string, key: keys = 'id'): Observable<" . $Name . "[]> {
     return this." . $name . "$.pipe(map(i => { return i." . $names . ".filter(a => a[key] == id) }));
   }
+  addState(data: any) {
+    this.store.dispatch(new Add$Name(data));
+  }
+  upsertState(data: any[]) {
+    this.store.dispatch(new Upsert$Name(data));
+  }
+  array() {
+    return this.AsyncPipe.transform(this.allState());
+  }
   all(): void {
-    const " . $names . ": " . $Name . "[] = this.asyncpipe.transform(this." . $name . "$.pipe(map(i => i." . $names . "))) || [];
+    const " . $names . ": " . $Name . "[] = this.AsyncPipe.transform(this." . $name . "$.pipe(map(i => i." . $names . "))) || [];
     if (" . $names . ".length > 0) {
       this.refresh(" . $names . ");
     } else {

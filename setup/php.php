@@ -2,13 +2,6 @@
 
 function phpmodel($table)
 {
-   $nullable = [];
-   foreach ($table['data'] as $sql) {
-      if (str_contains($sql['sql_attribute'], 'NOT NULL')) {
-      } else {
-         $nullable[] = $sql['name'];
-      }
-   }
    $relations_key = array_keys($table['relations']);
    $relations = '';
    if (count($relations_key) > 0) {
@@ -37,19 +30,8 @@ function phpmodel($table)
       }
       $relations .= ']';
    }
-   $fillable = "['";
-   $fillable_array = [];
-   foreach ($table['data'] as $value) {
-      if (!isset($value['fillable'])) {
-         $fillable_array[] = $value['name'];
-      } else {
-         if ($value['fillable'] == 'true') {
-            $fillable_array[] = $value['name'];
-         }
-      }
-   }
-   $fillable .= implode("','", $fillable_array);
-   $fillable .= "']";
+   $nullable = array_column(array_filter($table["data"], fn ($r) => !(isset($r["sql_attribute"]) && (str_contains($r['sql_attribute'], 'NOT NULL') || str_contains($r['sql_attribute'], 'PRIMARY')))), "name");
+   $fillable = array_column(array_filter($table["data"], fn ($r) => !isset($r["fillable"])), "name");
    return php_w('
 namespace App\Model;
 
@@ -63,7 +45,7 @@ class ' . ucfirst($table['name']) . ' extends Model {
     protected $enable = ' . (in_array("enable", array_column($table['data'], 'name')) ? 'true' : 'false') . ';
     protected $table = "' . $table['table'] . '";
     protected $relations = ' . ($relations == '' ? '""' : $relations) . ';
-    protected $fillable = ' . $fillable . ';
+    protected $fillable = ' . json_encode($fillable) . ';
 
 }');
 }
@@ -169,8 +151,11 @@ class ' . ucfirst($key) . ucfirst($table['name']) . 'Controller {
 
     public static function delete($id) {
       $' . $table['name'] . ' = ' . ucfirst($table['name']) . '::find($id)->array();
-      unlink($' . $table['name'] . '[' . '"path"' . ']);
-      ' . ucfirst($table['name']) . '::delete(["id" => $id]);
+      if ($' . $table['name'] . ') {
+          is_file($' . $table['name'] . '["path"]) ? unlink($' . $table['name'] . '["path"]) : "";
+          ' . ucfirst($table['name']) . '::delete(["id" => $id]);
+      }
+      return $id;
     }' : '') . '
 
 }');

@@ -23,14 +23,16 @@ class compilephp
 
     function folderscan($dir)
     {
-        foreach (scandir($dir) as $file) {
-            if ($file == '.') {
-            } elseif ($file == "..") {
-            } elseif (is_file("$dir/$file")) {
-                // $this->ComponentDir($dir, $file)
-                $this->x[$dir . DIRECTORY_SEPARATOR . $file] = $this->ComponentDir($dir, $file);
-            } elseif (is_dir("$dir/$file")) {
-                $this->folderscan("$dir/$file");
+        if (is_dir($dir)) {
+            foreach (scandir($dir) as $file) {
+                if ($file == '.') {
+                } elseif ($file == "..") {
+                } elseif (is_file("$dir/$file")) {
+                    // $this->ComponentDir($dir, $file)
+                    $this->x[$dir . DIRECTORY_SEPARATOR . $file] = $this->ComponentDir($dir, $file);
+                } elseif (is_dir("$dir/$file")) {
+                    $this->folderscan("$dir/$file");
+                }
             }
         }
     }
@@ -95,7 +97,7 @@ class compilephp
                 if (preg_match("/[:]([a-zA-Z\d?:\-_+]{1,})/", $i[1])) {
                     if (isset($i[4]) && $i[4] !== "") {
                         $variable = json_decode($i[4], true);
-                        print_r($variable);
+                        // print_r($variable);
                         if ($variable) {
                             $n[] = str_replace(":", "", $i[1]) . ": " . var_export($variable, true);
                         }
