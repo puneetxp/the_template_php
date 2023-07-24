@@ -59,7 +59,7 @@ function defaultsetup($data = ['id', 'created_at', 'updated_at'])
 {
    $table = [];
    if (in_array('id', $data)) {
-      $table[] = ['name' => 'id', 'mysql_data' => 'int', 'datatype' => 'number', 'fillable' => "false", 'sql_attribute' => 'UNSIGNED PRIMARY KEY AUTO_INCREMENT'];
+      $table[] = ['name' => 'id', 'mysql_data' => 'int UNSIGNED', 'datatype' => 'number', 'fillable' => "false", 'sql_attribute' => 'PRIMARY KEY AUTO_INCREMENT'];
    }
    if (in_array('created_at', $data)) {
       $table[] = ['name' => 'created_at', 'mysql_data' => 'timestamp', 'datatype' => 'Date', 'fillable' => "false", 'sql_attribute' => 'DEFAULT CURRENT_TIMESTAMP NOT NULL'];
@@ -126,7 +126,7 @@ function table_set($item, $x)
          $rx = ['table' => $x[$r]['table'], 'name' => isset($relation['alias']) ? $relation['alias'] : $x[$r]['name'] . '_id', 'key' => 'id'];
          $table[] = [
             'name' => isset($relation['alias']) ? $relation['alias'] : $x[$r]['name'] . '_id',
-            'mysql_data' => 'int',
+            'mysql_data' => 'int UNSIGNED',
             'datatype' => 'number',
             ...(isset($relation["default"]) ? ["default" => $relation["default"]] : []),
             ...(isset($relation["sql_attribute"]) ? ["sql_attribute" => $relation["sql_attribute"]] : []),

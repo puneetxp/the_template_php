@@ -54,7 +54,7 @@ function angularset($table, $json)
     $Interface = fopen_dir(__DIR__ . "/" . $angular_path . 'Interface/' . ucfirst('model/') . ucfirst($item['name']) . '.ts');
     fwrite($Interface, $Interface_write);
     formsset($item);
-    $Interface = fopen_dir(__DIR__ . "/" . $angular_path . 'Form/' . ucfirst('model/') . ucfirst($item['name']) . '.ts');
+    $Interface = fopen_dir(__DIR__ . "/" . $angular_path . 'Form/' . ucfirst('validation/') . ucfirst($item['name']) . '.ts');
     fwrite($Interface, formsset($item));
   }
   $angular_config = json_decode(file_get_contents(__DIR__ . '/../angular/angular.json'), TRUE);

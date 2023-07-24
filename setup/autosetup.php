@@ -47,6 +47,7 @@ for ($i = 0; $i < count($table); ++$i) {
 }
 //set sql_attribute
 $table = mysqltable::addattribute($table);
+echo "Tables Build\n";
 // print_r($table);
 $controller_route = [];
 foreach ($table as $item) {
@@ -55,15 +56,19 @@ foreach ($table as $item) {
 //deno
 if (in_array('deno', $json_set['back-end'])) {
    denoset($table);
+   echo "Deno Build\n";
 }
 //php
 if (in_array('php', $json_set['back-end'])) {
    phpset($table, $json_set);
+   echo "PHP Build\n";
 }
 
 if (in_array('angular', $json_set['front-end'])) {
    angularset($table, $json_set);
+   echo "Angular Build\n";
 }
+mysqltable::alltable($table);
 foreach ($table as $item) {
    //    if (in_array('php', $json_set['back-end'])) {
    //       //php
@@ -94,12 +99,12 @@ foreach ($table as $item) {
    //       //      $router_model = crud($item['name'], $item['roles'], $item['crud']);
    //       //      fwrite($route_file, php_wrapper("use App\Controller\{ " . ucfirst($item['name']) . "Controller};" . $router_model));
    //    }
-   $mysql_write = mysqltable::table($item);
-   $mysql_relation = mysqltable::migrate_table($item);
-   $mysql = fopen_dir(__DIR__ . "/../database/" . ucfirst('mysql/') . ucfirst($item['name']) . '.sql');
-   $mysql_relation_file = fopen_dir(__DIR__ . "/../database/" . ucfirst('mysql/') . ucfirst('relations/') . ucfirst($item['name']) . '_relation.sql');
-   fwrite($mysql_relation_file, $mysql_relation);
-   fwrite($mysql, $mysql_write);
+   // $mysql_write = mysqltable::table($item);
+   // $mysql_relation = mysqltable::migrate_table($item);
+   // $mysql = fopen_dir(__DIR__ . "/../database/" . ucfirst('mysql/') . ucfirst('structure/') . ucfirst($item['name']) . '.sql');
+   // $mysql_relation_file = fopen_dir(__DIR__ . "/../database/" . ucfirst('mysql/') . ucfirst('relations/') . ucfirst($item['name']) . '_relation.sql');
+   // fwrite($mysql_relation_file, $mysql_relation);
+   // fwrite($mysql, $mysql_write);
    //demo vue with cdn
    // $vuedjs = '../vuejs/src/shared/';
    // $Interface = fopen_dir(__DIR__."/".$vuedjs . 'Interface/' . ucfirst('model/') . ucfirst($item['name']) . '.ts');
@@ -144,9 +149,11 @@ foreach ($route_use_array as $key => $value) {
 $migration_sql = '';
 $migration_relation = '';
 foreach ($table as $item) {
-   $migration_sql .= file_get_contents(__DIR__ . "/../database/" . ucfirst('mysql/') . ucfirst($item['name']) . '.sql', 'TRUE');
+   $migration_sql .= file_get_contents(__DIR__ . "/../database/" . ucfirst('mysql/') . ucfirst('structure/') . ucfirst($item['name']) . '.sql', 'TRUE');
    $migration_relation .= file_get_contents(__DIR__ . "/../database/" . ucfirst('mysql/') . ucfirst('relations/') . ucfirst($item['name']) . '_relation.sql', 'TRUE');
 }
 $migration_sql .= 'INSERT INTO roles (name) VALUES ("' . implode('"),("', array_values(array_unique($roles))) . '");';
+file_put_contents(__DIR__ . '/../database/structure.sql', ($migration_sql));
+file_put_contents(__DIR__ . '/../database/relation.sql', ($migration_relation));
 file_put_contents(__DIR__ . '/../database/Migration.sql', ($migration_sql . ' ' . $migration_relation));
 file_put_contents(__DIR__ . '/../config.json', json_encode($json_set, JSON_PRETTY_PRINT));

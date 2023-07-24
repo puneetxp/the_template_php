@@ -20,7 +20,7 @@ class mysqltable
     public static function table($table)
     {
         return 'CREATE TABLE ' . $table['table'] . '(' .
-            implode("", array_map(
+            implode(",", array_map(
                 fn ($item) =>
                 "`" . $item['name'] . "`" . ' ' .
                     $item['mysql_data'] . ' ' .
@@ -37,7 +37,7 @@ class mysqltable
             }
         }
         if (count($relation_data) > 0) {
-            $alter = "ALTER TABLE " . $table['table'];
+            $alter = " ALTER TABLE " . $table['table'];
             $relation_key_sql = $alter;
             $relation_constrain_sql = $alter;
             foreach ($relation_data as $id => $items) {
@@ -55,5 +55,73 @@ class mysqltable
             }
             return $relation_key_sql . $relation_constrain_sql;
         }
+    }
+    public static function alltable($tables)
+    {
+        echo "building sql";
+        foreach ($tables as $table) {
+            $mysql_write = mysqltable::table($table);
+            $mysql_relation = mysqltable::migrate_table($table);
+            $mysql = fopen_dir(__DIR__ . "/../database/" . ucfirst('mysql/') . ucfirst('structure/') . ucfirst($table['name']) . '.sql');
+            $mysql_relation_file = fopen_dir(__DIR__ . "/../database/" . ucfirst('mysql/') . ucfirst('relations/') . ucfirst($table['name']) . '_relation.sql');
+            fwrite($mysql_relation_file, $mysql_relation);
+            fwrite($mysql, $mysql_write);
+        }
+        echo "     Done\n";
+    }
+    public $dir = [
+        "structure" => [],   "relations" => []
+    ];
+    public $json_set = [];
+    public $conn;
+    public function __construct()
+    {
+        $this->json_set = json_decode(file_get_contents(__DIR__ . '/../config.json'), TRUE);
+        $this->dir["structure"] = __DIR__ . "/../database/" . ucfirst('mysql/') . ucfirst('structure');
+        $this->dir["relations"] = __DIR__ . "/../database/" . ucfirst('mysql/') . ucfirst('relations');
+        $conn = new mysqli($this->json_set["env"]["dbhost"], $this->json_set["env"]["dbuser"], $this->json_set["env"]["dbpwd"]);
+        if ($this->json_set["fresh"] == true) {
+            $conn->query("Drop DATABASE " . $this->json_set["env"]["dbname"] . ";");
+        }
+        $conn->query("CREATE DATABASE IF NOT EXISTS " . $this->json_set["env"]["dbname"] . ";");
+        $conn->select_db($this->json_set["env"]["dbname"]);
+        $this->conn = $conn;
+        if (mysqli_connect_error()) {
+            exit('Connect Error (' . mysqli_connect_errno() . ') '
+                . mysqli_connect_error());
+        }
+    }
+
+    public function migrate()
+    {
+        echo "migrate sql\n";
+        foreach ($this->dir as $key => $dir) {
+            if ($this->json_set["fresh"] == true);
+            echo "Migrating " . $key . "\n";
+            foreach (scanfullfolder($dir) as $file) {
+                echo $file . "\n";
+                $x = file_get_contents($file);
+                foreach (explode(";", $x) as $xx) {
+                    if ($xx !== "") {
+                        $this->conn->multi_query($xx);
+                    }
+                }
+            }
+        }
+        echo "     Done\n";
+    }
+    public static function migraterun()
+    {
+        $json_set = json_decode(file_get_contents(__DIR__ . '/../config.json'), TRUE);
+        $dir["structure"] = __DIR__ . "/../database/" . ucfirst('mysql/') . ucfirst('structure');
+        $dir["relations"] = __DIR__ . "/../database/" . ucfirst('mysql/') . ucfirst('relations');
+        $conn = new mysqli($json_set["env"]["dbhost"], $json_set["env"]["dbuser"], $json_set["env"]["dbpwd"]);
+        if ($json_set["fresh"] == true) {
+            $conn->query("Drop DATABASE " . $json_set["env"]["dbname"] . ";");
+        }
+        $conn->multi_query("CREATE DATABASE IF NOT EXISTS " . $json_set["env"]["dbname"] . ";");
+        $conn->select_db($json_set["env"]["dbname"]);
+        $x = file_get_contents(__DIR__ . "/../database/" . "Migration.sql");
+        $conn->query($x);
     }
 }
