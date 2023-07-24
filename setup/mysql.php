@@ -81,6 +81,7 @@ class mysqltable
         $this->dir["relations"] = __DIR__ . "/../database/" . ucfirst('mysql/') . ucfirst('relations');
         $conn = new mysqli($this->json_set["env"]["dbhost"], $this->json_set["env"]["dbuser"], $this->json_set["env"]["dbpwd"]);
         if ($this->json_set["fresh"] == true) {
+            $conn->query("CREATE DATABASE IF NOT EXISTS ".$this->json_set["env"]["dbname"] . ";");
             $conn->query("Drop DATABASE " . $this->json_set["env"]["dbname"] . ";");
         }
         $conn->query("CREATE DATABASE IF NOT EXISTS " . $this->json_set["env"]["dbname"] . ";");
