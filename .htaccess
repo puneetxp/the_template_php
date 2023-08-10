@@ -8,4 +8,3 @@ RewriteRule ^(.*)$ /public_html/$1
 #RewriteRule ^ index.php [L]
 RewriteRule ^(/)?$ public_html/index.php [L] 
 </IfModule>
-
