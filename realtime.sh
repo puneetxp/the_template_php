@@ -8,5 +8,5 @@ done &
 while inotifywait -e modify -r ./php/Routes/pre/; do
     php ./php/set.php
 done &
-sass --style=compressed  --watch Resource/Style:public_html/assets/css &
+sass --style=compressed  --watch Resource/Style:public/assets/css &
 composer dump-autoload --working-dir=php
