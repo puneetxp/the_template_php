@@ -2,7 +2,7 @@
 
 use App\Controller\Web\guestController;
 
-$view = [
+$public = [
  [
   "path" => "",
   "handler" => [guestController::class, "homepage"]

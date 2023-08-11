@@ -2,9 +2,9 @@
 
 use App\Controller\Isuper\IsuperManagerController;
 
-$env = [
+$ienv = [
  [
-  "path" => "api/env",
+  "path" => "/env",
   "roles" => ["isuper"],
   "child" => [
    [

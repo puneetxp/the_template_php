@@ -2,7 +2,7 @@
 
 use The\Auth;
 
-$auth =  [
+$iauth =  [
     [
         "method" => "POST",
         "path" => "/login",

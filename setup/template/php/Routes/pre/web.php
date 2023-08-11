@@ -1,10 +1,10 @@
 <?php
 require __DIR__ . "/../../vendor/autoload.php";
-require __DIR__ . "/Ipublic.php";
-require __DIR__ . "/Isuper.php";
-require __DIR__ . "/Auth.php";
-require __DIR__ . "/view.php";
-require __DIR__ . "/env.php";
+require __DIR__ . "/api/Ipublic.php";
+require __DIR__ . "/api/Isuper.php";
+require __DIR__ . "/api/Iauth.php";
+require __DIR__ . "/api/Ienv.php";
+require __DIR__ . "/view/public.php";
 
 use The\compile\{RouteCompile, Thefun};
 
@@ -15,11 +15,12 @@ $routes = [
         [
             $ipublic,
             $isuper,
-            ...$auth,
+            ...$ienv,
+            ...$iauth,
+
         ]
     ],
-    ...$view,
-    ...$env,
+    ...$public,
 ];
 
 $route = var_export((new RouteCompile($routes))->route, true);
