@@ -61,7 +61,8 @@ if (in_array('deno', $json_set['back-end'])) {
 //php
 if (in_array('php', $json_set['back-end'])) {
    phpset($table, $json_set);
-   symlink("./" . $json_set["root"] . "/index.php", "index.php");
+   symlink("../php/index.php", $json_set["root"] . "index.php");
+   symlink("../storage/public",  "php/storage");
    echo "PHP Build\n";
 }
 

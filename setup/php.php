@@ -264,6 +264,15 @@ function templatecopy(string $folder, string $destination)
    foreach (scanfullfolder(__DIR__ . "/template/$folder") as $file) {
       $pre = __DIR__ . '/../' . $destination;
       $target = str_replace(__DIR__ . "/template/$folder", "",  $file);
+      $dir = "";
+      foreach (explode("/", $target) as $x) {
+         if ($x !== "") {
+            $dir .= "/" . $x;
+            if (!($pre . $target === $pre . $dir) && !is_dir($pre . $dir)) {
+               mkdir($pre . $dir);
+            }
+         }
+      }
       if (!is_file($pre . $target)) {
          copy($file, $pre . $target);
       }

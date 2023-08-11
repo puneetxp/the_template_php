@@ -1,5 +1,3 @@
-# mkdir public
-# ln -s ../storage/public ./public/storage
 
 # sholidjs with deno
 # npx degit solidjs/templates/ts solidjs
