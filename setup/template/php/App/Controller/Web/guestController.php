@@ -2,44 +2,36 @@
 
 namespace App\Controller\Web;
 
-use view\pages\{
+use view\pages\public\{
     index,
     aboutus,
     contactus,
-    products,
-    product,
-    page,
-    pages
+    login,
+    register
 };
 
-class guestController {
+class guestController
+{
 
-    public static function homepage() {
+    public static function homepage()
+    {
         return (new index())->view();
     }
 
-    public static function aboutus() {
+    public static function aboutus()
+    {
         return (new aboutus())->view();
     }
-
-    public static function page() {
-        return (new page())->view();
-    }
-
-    public static function pages() {
-        return (new pages())->view();
-    }
-
-    public static function contactus() {
+    public static function contactus()
+    {
         return (new contactus())->view();
     }
-
-    public static function product() {
-        return (new product())->view();
+    public static function login()
+    {
+        return (new login())->view();
     }
-
-    public static function products() {
-        return (new products())->view();
+    public static function register()
+    {
+        return (new register())->view();
     }
-
 }
