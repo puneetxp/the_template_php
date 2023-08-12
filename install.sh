@@ -18,6 +18,7 @@
 # ng add @angular/material
 
 # npm install
+# npx webpack --config webpack.config.js
 # npm install -D tailwindcss postcss autoprefixer
 # npx tailwindcss init -p
 # npm run dev
