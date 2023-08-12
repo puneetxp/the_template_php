@@ -14,13 +14,13 @@ $routes = [
         "child" =>
         [
             $ipublic,
-            $isuper,
-            ...$ienv,
-            ...$iauth,
-
+            [
+                "islogin" => true,
+                "child" => [$isuper, ...$ienv, ...$iauth]
+            ]
         ]
     ],
-    ...$public,
+    ...$public
 ];
 
 $route = var_export((new RouteCompile($routes))->route, true);
