@@ -7,7 +7,7 @@ require __DIR__ . "/api/Iauth.php";
 require __DIR__ . "/api/Ienv.php";
 require __DIR__ . "/view/public.php";
 require __DIR__ . "/view/auth.php";
-require __DIR__ . "/view/login.php";
+require __DIR__ . "/view/islogin.php";
 
 use The\compile\{RouteCompile, Thefun};
 
