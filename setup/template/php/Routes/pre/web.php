@@ -1,7 +1,7 @@
 <?php
 require __DIR__ . "/../../vendor/autoload.php";
 require __DIR__ . "/api/Ipublic.php";
-require __DIR__ . "/api/islogin.php";
+require __DIR__ . "/api/Islogin.php";
 require __DIR__ . "/api/Isuper.php";
 require __DIR__ . "/api/Iauth.php";
 require __DIR__ . "/api/Ienv.php";
@@ -24,8 +24,8 @@ $routes = [
         ]
     ],
     ...$public,
-    ...$auth,
-    ...$login
+    $login,
+    ...$auth
 ];
 
 $route = var_export((new RouteCompile($routes))->route, true);

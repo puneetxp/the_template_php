@@ -1,37 +1,7 @@
-@props({"title":"Mfdrent", "description":"Get Appliances on rent on low low price in Gurgaon or around
-Gurgaon","canonical":"https://mfdrent.in"})
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="utf-8">
-  <title>{$title}</title>
-  <meta name="description" content="{$description}" />
-  <link rel="canonical" href="{$canonical}" />
-  <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link href="/assets/css/main.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-</head>
-
-<body>
-  <div class="server_end">
-    <t-c.page.header :login="1">
-    </t-c.page.header>
-    <div class="flex-grow-1">
-      {$child}
-    </div>
-    <t-c.page.footer />
+<t-l.base :stylesheet=["/assets/css/component/header.css"]>
+  <t-c.page.headeradmin />
+  <div class="flex-grow-1  pt-5">
+    {$child}
   </div>
-  <div id="app">
-  </div>
-
-</body>
-
-<script src="/assets/js/index.js"></script>
-<!-- <script src="/src/main.js">
-
-</script> -->
-
-</html>
+  <t-c.page.footer />
+</t-l.base>
