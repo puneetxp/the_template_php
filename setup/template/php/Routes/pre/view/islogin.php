@@ -1,11 +1,14 @@
 <?php
 
 use App\Controller\Web\authController;
-
+use App\Guard\loginGuard;
 $login = [
  "islogin" => true,
- "child" => [[
-  "path" => "dashboard",
-  "handler" => [authController::class, "dashboard"]
- ]]
+ "guard" => [[loginGuard::class, "IsloginView"]],
+ "child" => [
+  [
+   "path" => "dashboard",
+   "handler" => [authController::class, "dashboard"]
+  ]
+ ]
 ];
