@@ -8,5 +8,8 @@
             "name": "Puneet Sharma",
             "email": "puneetsharma9@hotmail.com"
         }
-    ]
+    ],
+    "require": {
+        "puneetxp/compile-php": "^0.0.1"
+    }
 }
