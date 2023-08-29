@@ -25,3 +25,5 @@
 
 # cd ..
 # php setup.php
+# cd php 
+# composer install --working-dir=php
