@@ -1,16 +1,15 @@
-
-# sholidjs with deno
+## create public symbolic link
+ln -s ../storage/public public/storage
+## sholidjs with deno
 # npx degit solidjs/templates/ts solidjs
 # cd setup
 # php autosetup.php
 # cd ../
 # cd solidjs
 
-# php angular
+## angular
 # npm init @angular angular
 # cd angular
-
-
 # Aditional Angular PWA and more
 # ng add @angular/pwa
 # npm install @ngxs/store --save
@@ -22,8 +21,9 @@
 # npm install -D tailwindcss postcss autoprefixer
 # npx tailwindcss init -p
 # npm run dev
-
 # cd ..
+
+## PHP
 # php setup.php
 # cd php 
-# composer install --working-dir=php
+# composer install
