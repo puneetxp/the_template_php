@@ -1,9 +1,8 @@
 #!/bin/sh
 
-php ./setup/compile/php.php
 php ./php/set.php
 while inotifywait -e modify -r ./Resource/View/; do
-    php ./setup/compile/php.php
+    php ./compile.php
 done &
 while inotifywait -e modify -r ./php/Routes/pre/; do
     php ./php/set.php
