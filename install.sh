@@ -25,5 +25,6 @@ ln -s ../storage/public public/storage
 
 ## PHP
 # php setup.php
+# ln -s ../php/index.php public/index.php
 # cd php 
 # composer install
