@@ -27,5 +27,6 @@
 ## PHP
 # php setup.php
 # ln -s ../php/index.php public/index.php
+# ln -s ../php/.htaccess public/.htaccess
 # cd php 
 # composer install
