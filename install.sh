@@ -1,3 +1,6 @@
+## NPM install bootstrap
+# npm install
+# npx webpack --config webpack.config.js
 
 ## PHP
 # php setup.php
@@ -28,6 +31,3 @@
 # npx tailwindcss init -p
 # npm run dev
 # cd ..
-
-# npm install
-# npx webpack --config webpack.config.js
