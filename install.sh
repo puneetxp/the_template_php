@@ -1,10 +1,17 @@
+
+## PHP
+# php setup.php
+# ln -s ../php/index.php public/index.php
+# ln -s ../php/.htaccess public/.htaccess
+# cd php 
+# composer install
+# cd ..
+
 ## create public symbolic link
 # ln -s ../storage/public public/storage
 
 ## sholidjs with deno
 # npx degit solidjs/templates/ts solidjs
-# cd setup
-# php autosetup.php
 # cd ../
 # cd solidjs
 
@@ -17,16 +24,10 @@
 # npm install @ngxs/storage-plugin --save
 # ng add @angular/material
 
-# npm install
-# npx webpack --config webpack.config.js
 # npm install -D tailwindcss postcss autoprefixer
 # npx tailwindcss init -p
 # npm run dev
 # cd ..
 
-## PHP
-# php setup.php
-# ln -s ../php/index.php public/index.php
-# ln -s ../php/.htaccess public/.htaccess
-# cd php 
-# composer install
+# npm install
+# npx webpack --config webpack.config.js
