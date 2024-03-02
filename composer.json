@@ -10,6 +10,6 @@
         }
     ],
     "require": {
-        "puneetxp/compile-php": "^0.0.1"
+        "puneetxp/compile-php": "^0.0.2"
     }
 }
